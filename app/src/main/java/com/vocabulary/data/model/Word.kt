@@ -34,9 +34,9 @@ data class Word(
 
     val dateAdded: Long = System.currentTimeMillis()
 ) {
-    fun getDifficulty(): DifficultyLevel = DifficultyLevel.fromString(difficultyLevel)
+    fun getDifficultyEnum(): DifficultyLevel = DifficultyLevel.fromString(difficultyLevel)
 
-    fun getCategory(): WordCategory = WordCategory.fromString(category)
+    fun getCategoryEnum(): WordCategory = WordCategory.fromString(category)
 
     fun getSynonymsList(): List<String> =
         synonyms.split(",").map { it.trim() }.filter { it.isNotEmpty() }

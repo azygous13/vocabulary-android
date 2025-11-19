@@ -55,8 +55,8 @@ class WordDetailActivity : AppCompatActivity() {
                     binding.tvWord.text = w.word
                     binding.tvPronunciation.text = w.pronunciation
                     binding.chipPartOfSpeech.text = w.partOfSpeech
-                    binding.chipDifficulty.text = w.getDifficulty().displayName
-                    binding.chipCategory.text = w.getCategory().displayName
+                    binding.chipDifficulty.text = w.getDifficultyEnum().displayName
+                    binding.chipCategory.text = w.getCategoryEnum().displayName
                     binding.tvDefinition.text = w.definition
                     binding.tvExample.text = "\"${w.example}\""
                     binding.tvSynonyms.text = w.synonyms

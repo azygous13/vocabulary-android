@@ -6,7 +6,7 @@ import org.junit.Test
 class WordTest {
 
     @Test
-    fun `getDifficulty returns correct DifficultyLevel`() {
+    fun `getDifficultyEnum returns correct DifficultyLevel`() {
         val word = Word(
             id = 1,
             word = "Test",
@@ -21,11 +21,11 @@ class WordTest {
             category = WordCategory.GENERAL.name
         )
 
-        assertThat(word.getDifficulty()).isEqualTo(DifficultyLevel.INTERMEDIATE)
+        assertThat(word.getDifficultyEnum()).isEqualTo(DifficultyLevel.INTERMEDIATE)
     }
 
     @Test
-    fun `getCategory returns correct WordCategory`() {
+    fun `getCategoryEnum returns correct WordCategory`() {
         val word = Word(
             id = 1,
             word = "Algorithm",
@@ -40,7 +40,7 @@ class WordTest {
             category = WordCategory.TECHNOLOGY.name
         )
 
-        assertThat(word.getCategory()).isEqualTo(WordCategory.TECHNOLOGY)
+        assertThat(word.getCategoryEnum()).isEqualTo(WordCategory.TECHNOLOGY)
     }
 
     @Test

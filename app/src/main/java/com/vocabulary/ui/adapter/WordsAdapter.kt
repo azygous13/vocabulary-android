@@ -34,7 +34,7 @@ class WordsAdapter(
             binding.tvWord.text = word.word
             binding.tvPronunciation.text = word.pronunciation
             binding.tvDefinition.text = word.definition
-            binding.chipDifficulty.text = word.getDifficulty().displayName
+            binding.chipDifficulty.text = word.getDifficultyEnum().displayName
 
             binding.root.setOnClickListener {
                 onWordClick(word)
