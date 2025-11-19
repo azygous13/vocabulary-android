@@ -2,35 +2,35 @@ package com.vocabulary.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary - Subtle Blue-Gray
-val Primary = Color(0xFF5B7C99)
-val PrimaryLight = Color(0xFF7A9AB8)
-val PrimaryDark = Color(0xFF3D5A75)
+// Primary - Soft Warm Brown
+val Primary = Color(0xFF8D6E63)
+val PrimaryLight = Color(0xFFA1887F)
+val PrimaryDark = Color(0xFF6D4C41)
 
-// Secondary - Muted accent
-val Secondary = Color(0xFF8B9BAE)
-val SecondaryLight = Color(0xFFA5B3C4)
-val SecondaryDark = Color(0xFF6B7A8C)
+// Secondary - Warm Beige
+val Secondary = Color(0xFFBCAAA4)
+val SecondaryLight = Color(0xFFD7CCC8)
+val SecondaryDark = Color(0xFF8D6E63)
 
-// Background
-val Background = Color(0xFFFBFBFB)
+// Background - Warm cream tones
+val Background = Color(0xFFFFF8F5)
 val Surface = Color(0xFFFFFFFF)
-val SurfaceVariant = Color(0xFFF5F7FA)
+val SurfaceVariant = Color(0xFFFFF3E0)
 
 // Success and Error
-val Success = Color(0xFF4CAF50)
+val Success = Color(0xFF81C784)
 val Error = Color(0xFFE57373)
 
-// Text
+// Text - Warm dark tones
 val OnPrimary = Color(0xFFFFFFFF)
-val OnSecondary = Color(0xFFFFFFFF)
-val OnBackground = Color(0xFF2C3E50)
-val OnSurface = Color(0xFF424242)
-val OnSurfaceVariant = Color(0xFF757575)
+val OnSecondary = Color(0xFF3E2723)
+val OnBackground = Color(0xFF4E342E)
+val OnSurface = Color(0xFF5D4037)
+val OnSurfaceVariant = Color(0xFF8D6E63)
 
-// Dark Theme
-val PrimaryDarkTheme = Color(0xFF7A9AB8)
-val BackgroundDarkTheme = Color(0xFF1A1A1A)
-val SurfaceDarkTheme = Color(0xFF2A2A2A)
-val OnBackgroundDarkTheme = Color(0xFFE0E0E0)
-val OnSurfaceDarkTheme = Color(0xFFBDBDBD)
+// Dark Theme - Warm dark tones
+val PrimaryDarkTheme = Color(0xFFA1887F)
+val BackgroundDarkTheme = Color(0xFF2C2016)
+val SurfaceDarkTheme = Color(0xFF3E2723)
+val OnBackgroundDarkTheme = Color(0xFFEFEBE9)
+val OnSurfaceDarkTheme = Color(0xFFD7CCC8)
