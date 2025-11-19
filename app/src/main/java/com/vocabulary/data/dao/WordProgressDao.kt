@@ -30,6 +30,12 @@ interface WordProgressDao {
     @Query("SELECT * FROM word_progress ORDER BY lastPracticed DESC LIMIT :limit")
     fun getRecentlyPracticedWords(limit: Int = 10): Flow<List<WordProgress>>
 
+    @Query("SELECT * FROM word_progress WHERE nextReviewDate IS NULL OR nextReviewDate <= :currentTime ORDER BY nextReviewDate ASC")
+    fun getWordsDueForReview(currentTime: Long = System.currentTimeMillis()): Flow<List<WordProgress>>
+
+    @Query("SELECT COUNT(*) FROM word_progress WHERE nextReviewDate IS NULL OR nextReviewDate <= :currentTime")
+    suspend fun getDueForReviewCount(currentTime: Long = System.currentTimeMillis()): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProgress(progress: WordProgress)
 

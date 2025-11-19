@@ -31,7 +31,8 @@ fun MainScreen(
     onNavigateToWordDetail: (Long) -> Unit,
     onNavigateToBrowse: () -> Unit,
     onNavigateToFavorites: () -> Unit,
-    onNavigateToQuiz: () -> Unit
+    onNavigateToQuiz: () -> Unit,
+    onNavigateToSpacedRepetition: () -> Unit
 ) {
     val todayWord by viewModel.todayWord.collectAsStateWithLifecycle()
     val wordProgress by viewModel.wordProgress.collectAsStateWithLifecycle()
@@ -100,19 +101,28 @@ fun MainScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     QuickActionCard(
+                        title = "ทบทวนคำศัพท์",
+                        emoji = "🔄",
+                        onClick = onNavigateToSpacedRepetition,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    QuickActionCard(
                         title = "Practice Quiz",
                         emoji = "📝",
                         onClick = onNavigateToQuiz,
                         modifier = Modifier.weight(1f)
                     )
-
-                    QuickActionCard(
-                        title = "Browse Words",
-                        emoji = "📚",
-                        onClick = onNavigateToBrowse,
-                        modifier = Modifier.weight(1f)
-                    )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                QuickActionCard(
+                    title = "Browse Words",
+                    emoji = "📚",
+                    onClick = onNavigateToBrowse,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             // Loading indicator

@@ -13,7 +13,7 @@ import com.vocabulary.data.model.WordProgress
 
 @Database(
     entities = [Word::class, WordProgress::class, DailyWord::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class VocabularyDatabase : RoomDatabase() {

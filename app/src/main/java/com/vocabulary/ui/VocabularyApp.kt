@@ -32,6 +32,9 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
                 },
                 onNavigateToQuiz = {
                     navController.navigate(Screen.QuizCollection.route)
+                },
+                onNavigateToSpacedRepetition = {
+                    navController.navigate(Screen.SpacedRepetition.route)
                 }
             )
         }
@@ -86,6 +89,13 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
             QuizScreen(
                 viewModel = viewModel,
                 quizType = quizType,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.SpacedRepetition.route) {
+            SpacedRepetitionScreen(
+                viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
