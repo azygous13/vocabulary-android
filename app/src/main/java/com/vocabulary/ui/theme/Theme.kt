@@ -7,6 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -14,48 +15,69 @@ import androidx.core.view.WindowCompat
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,
-    primaryContainer = PrimaryLight,
-    onPrimaryContainer = OnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = Primary,
+
     secondary = Secondary,
     onSecondary = OnSecondary,
-    secondaryContainer = SecondaryLight,
-    onSecondaryContainer = OnPrimary,
-    tertiary = Primary,
-    onTertiary = OnPrimary,
-    tertiaryContainer = PrimaryLight,
-    onTertiaryContainer = OnPrimary,
+    secondaryContainer = SecondaryContainer,
+    onSecondaryContainer = Secondary,
+
+    tertiary = Tertiary,
+    onTertiary = OnTertiary,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = Tertiary,
+
     error = Error,
     onError = OnPrimary,
+    errorContainer = Color(0xFFFFEDEA), // Red-50
+    onErrorContainer = Error,
+
     background = Background,
     onBackground = OnBackground,
+
     surface = Surface,
     onSurface = OnSurface,
     surfaceVariant = SurfaceVariant,
     onSurfaceVariant = OnSurfaceVariant,
-    outline = OnSurfaceVariant
+    surfaceTint = Primary,
+
+    outline = OnSurfaceVariant,
+    outlineVariant = Color(0xFFE5E7EB) // Gray-200
 )
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDarkTheme,
-    onPrimary = OnPrimary,
-    primaryContainer = PrimaryDark,
-    onPrimaryContainer = OnPrimary,
-    secondary = SecondaryLight,
-    onSecondary = OnPrimary,
-    secondaryContainer = SecondaryDark,
-    onSecondaryContainer = OnPrimary,
-    tertiary = PrimaryDarkTheme,
-    onTertiary = OnPrimary,
-    tertiaryContainer = PrimaryDark,
-    onTertiaryContainer = OnPrimary,
+    onPrimary = Color(0xFF1E1B4B), // Indigo-950
+    primaryContainer = Color(0xFF312E81), // Indigo-900
+    onPrimaryContainer = PrimaryLight,
+
+    secondary = SecondaryDarkTheme,
+    onSecondary = Color(0xFF042F2E), // Teal-950
+    secondaryContainer = Color(0xFF134E4A), // Teal-900
+    onSecondaryContainer = SecondaryLight,
+
+    tertiary = TertiaryDarkTheme,
+    onTertiary = Color(0xFF3B0764), // Purple-950
+    tertiaryContainer = Color(0xFF581C87), // Purple-900
+    onTertiaryContainer = TertiaryLight,
+
     error = Error,
-    onError = OnPrimary,
+    onError = Color(0xFF7F1D1D), // Red-950
+    errorContainer = Color(0xFF991B1B), // Red-900
+    onErrorContainer = Color(0xFFFECACA), // Red-200
+
     background = BackgroundDarkTheme,
     onBackground = OnBackgroundDarkTheme,
+
     surface = SurfaceDarkTheme,
     onSurface = OnSurfaceDarkTheme,
-    surfaceVariant = SurfaceDarkTheme,
-    onSurfaceVariant = OnSurfaceVariant
+    surfaceVariant = SurfaceVariantDarkTheme,
+    onSurfaceVariant = OnSurfaceVariantDarkTheme,
+    surfaceTint = PrimaryDarkTheme,
+
+    outline = OnSurfaceVariantDarkTheme,
+    outlineVariant = Color(0xFF475569) // Slate-600
 )
 
 @Composable
@@ -69,8 +91,9 @@ fun VocabularyTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // Use background color for status bar for modern look
+            window.statusBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
