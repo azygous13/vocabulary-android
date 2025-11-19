@@ -23,26 +23,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.WordDetailActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <activity
-            android:name=".ui.QuizActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <activity
-            android:name=".ui.BrowseWordsActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
-
-        <activity
-            android:name=".ui.FavoritesActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
-
     </application>
 
 </manifest>
