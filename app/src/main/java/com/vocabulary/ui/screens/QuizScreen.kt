@@ -48,6 +48,14 @@ fun QuizScreen(
     var correctCount by remember { mutableIntStateOf(0) }
     var isAnswerChecked by remember { mutableStateOf(false) }
 
+    val quizTypeEnum = remember(quizType) {
+        try {
+            QuizType.valueOf(quizType)
+        } catch (e: IllegalArgumentException) {
+            QuizType.MULTIPLE_CHOICE
+        }
+    }
+
     // Load initial question
     LaunchedEffect(allWords, quizTypeEnum) {
         if (allWords.isNotEmpty()) {
@@ -79,14 +87,6 @@ fun QuizScreen(
                     )
                 }
             }
-        }
-    }
-
-    val quizTypeEnum = remember(quizType) {
-        try {
-            QuizType.valueOf(quizType)
-        } catch (e: IllegalArgumentException) {
-            QuizType.MULTIPLE_CHOICE
         }
     }
 
