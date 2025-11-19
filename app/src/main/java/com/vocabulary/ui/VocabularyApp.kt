@@ -31,7 +31,7 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
                     navController.navigate(Screen.Favorites.route)
                 },
                 onNavigateToQuiz = {
-                    navController.navigate(Screen.Quiz.route)
+                    navController.navigate(Screen.QuizCollection.route)
                 }
             )
         }
@@ -68,9 +68,24 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
             )
         }
 
-        composable(Screen.Quiz.route) {
+        composable(Screen.QuizCollection.route) {
+            QuizCollectionScreen(
+                viewModel = viewModel,
+                onQuizTypeSelected = { quizType ->
+                    navController.navigate(Screen.Quiz.createRoute(quizType.name))
+                },
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.Quiz.route,
+            arguments = listOf(navArgument("quizType") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val quizType = backStackEntry.arguments?.getString("quizType") ?: "MULTIPLE_CHOICE"
             QuizScreen(
                 viewModel = viewModel,
+                quizType = quizType,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

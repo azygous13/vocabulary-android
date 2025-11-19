@@ -30,6 +30,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun QuizScreen(
     viewModel: MainViewModel,
+    quizType: String = "MULTIPLE_CHOICE",
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -64,15 +65,23 @@ fun QuizScreen(
         }
     }
 
+    val quizTypeEnum = remember(quizType) {
+        try {
+            QuizType.valueOf(quizType)
+        } catch (e: IllegalArgumentException) {
+            QuizType.MULTIPLE_CHOICE
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         if (questionCount > 0) {
-                            "Quiz - Score: $correctCount/$questionCount"
+                            "${quizTypeEnum.displayName} - Score: $correctCount/$questionCount"
                         } else {
-                            "Practice Quiz"
+                            quizTypeEnum.displayName
                         }
                     )
                 },

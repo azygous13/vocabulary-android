@@ -7,5 +7,8 @@ sealed class Screen(val route: String) {
     }
     data object BrowseWords : Screen("browse_words")
     data object Favorites : Screen("favorites")
-    data object Quiz : Screen("quiz")
+    data object QuizCollection : Screen("quiz_collection")
+    data object Quiz : Screen("quiz/{quizType}") {
+        fun createRoute(quizType: String) = "quiz/$quizType"
+    }
 }
