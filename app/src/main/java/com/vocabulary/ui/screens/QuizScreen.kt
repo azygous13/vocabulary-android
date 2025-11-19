@@ -813,7 +813,10 @@ private suspend fun loadTrueFalseQuestion(
             partOfSpeech = selectedWord.partOfSpeech,
             definition = displayedDefinition,
             example = selectedWord.example,
-            difficulty = selectedWord.difficulty,
+            synonyms = selectedWord.synonyms,
+            antonyms = selectedWord.antonyms,
+            etymology = selectedWord.etymology,
+            difficultyLevel = selectedWord.difficultyLevel,
             category = selectedWord.category
         ))
 
