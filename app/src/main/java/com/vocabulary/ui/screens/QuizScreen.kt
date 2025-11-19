@@ -19,9 +19,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vocabulary.data.database.VocabularyDatabase
 import com.vocabulary.data.model.Word
 import com.vocabulary.ui.MainViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +33,7 @@ fun QuizScreen(
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val allWords by viewModel.allWords.collectAsStateWithLifecycle(emptyList())
 
     var currentWord by remember { mutableStateOf<Word?>(null) }
@@ -201,7 +204,7 @@ fun QuizScreen(
 
                             // Record answer
                             currentWord?.let { word ->
-                                kotlinx.coroutines.MainScope().launch {
+                                coroutineScope.launch {
                                     withContext(Dispatchers.IO) {
                                         val database = VocabularyDatabase.getDatabase(context)
                                         val repository = com.vocabulary.data.repository.VocabularyRepository(
