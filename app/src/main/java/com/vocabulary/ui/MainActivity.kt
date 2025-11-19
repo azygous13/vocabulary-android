@@ -7,9 +7,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.vocabulary.R
 import com.vocabulary.databinding.ActivityMainBinding
 import com.vocabulary.notification.NotificationHelper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -30,31 +35,50 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.todayWord.observe(this) { word ->
-            word?.let {
-                binding.tvWord.text = it.word
-                binding.tvPronunciation.text = it.pronunciation
-                binding.chipPartOfSpeech.text = it.partOfSpeech
-                binding.tvDefinition.text = it.definition
-                binding.tvExample.text = "\"${it.example}\""
+        // Collect StateFlow using lifecycleScope with repeatOnLifecycle
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Collect today's word
+                launch {
+                    viewModel.todayWord.collectLatest { word ->
+                        word?.let {
+                            binding.tvWord.text = it.word
+                            binding.tvPronunciation.text = it.pronunciation
+                            binding.chipPartOfSpeech.text = it.partOfSpeech
+                            binding.tvDefinition.text = it.definition
+                            binding.tvExample.text = "\"${it.example}\""
+                        }
+                    }
+                }
+
+                // Collect word progress
+                launch {
+                    viewModel.wordProgress.collectLatest { progress ->
+                        progress?.let {
+                            updateFavoriteButton(it.isFavorite)
+                            updateLearnedButton(it.isLearned)
+                        }
+                    }
+                }
+
+                // Collect statistics
+                launch {
+                    viewModel.statistics.collectLatest { stats ->
+                        stats?.let {
+                            binding.tvTotalWords.text = it.totalWords.toString()
+                            binding.tvLearnedWords.text = it.learnedWords.toString()
+                            binding.tvMasteredWords.text = it.masteredWords.toString()
+                        }
+                    }
+                }
+
+                // Collect loading state
+                launch {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                    }
+                }
             }
-        }
-
-        viewModel.wordProgress.observe(this) { progress ->
-            progress?.let {
-                updateFavoriteButton(it.isFavorite)
-                updateLearnedButton(it.isLearned)
-            }
-        }
-
-        viewModel.statistics.observe(this) { stats ->
-            binding.tvTotalWords.text = stats.totalWords.toString()
-            binding.tvLearnedWords.text = stats.learnedWords.toString()
-            binding.tvMasteredWords.text = stats.masteredWords.toString()
-        }
-
-        viewModel.isLoading.observe(this) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

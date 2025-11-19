@@ -4,9 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vocabulary.databinding.ActivityBrowseWordsBinding
 import com.vocabulary.ui.adapter.WordsAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class BrowseWordsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBrowseWordsBinding
@@ -39,8 +44,13 @@ class BrowseWordsActivity : AppCompatActivity() {
     }
 
     private fun observeWords() {
-        viewModel.allWords.observe(this) { words ->
-            adapter.submitList(words)
+        // Collect Flow using lifecycleScope with repeatOnLifecycle
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.allWords.collectLatest { words ->
+                    adapter.submitList(words)
+                }
+            }
         }
     }
 }

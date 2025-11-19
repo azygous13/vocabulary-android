@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.vocabulary.R
 import com.vocabulary.databinding.ActivityWordDetailBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WordDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWordDetailBinding
@@ -33,31 +35,40 @@ class WordDetailActivity : AppCompatActivity() {
 
     private fun loadWordDetails() {
         lifecycleScope.launch {
-            val database = com.vocabulary.data.database.VocabularyDatabase.getDatabase(applicationContext)
-            val repository = com.vocabulary.data.repository.VocabularyRepository(
-                database.wordDao(),
-                database.wordProgressDao(),
-                database.dailyWordDao()
-            )
+            try {
+                // Load data on IO dispatcher
+                val (word, progress) = withContext(Dispatchers.IO) {
+                    val database = com.vocabulary.data.database.VocabularyDatabase.getDatabase(applicationContext)
+                    val repository = com.vocabulary.data.repository.VocabularyRepository(
+                        database.wordDao(),
+                        database.wordProgressDao(),
+                        database.dailyWordDao()
+                    )
 
-            val word = repository.getWordById(wordId)
-            val progress = repository.getWordProgress(wordId)
+                    val wordData = repository.getWordById(wordId)
+                    val progressData = repository.getWordProgress(wordId)
+                    Pair(wordData, progressData)
+                }
 
-            word?.let { w ->
-                binding.tvWord.text = w.word
-                binding.tvPronunciation.text = w.pronunciation
-                binding.chipPartOfSpeech.text = w.partOfSpeech
-                binding.chipDifficulty.text = w.getDifficulty().displayName
-                binding.chipCategory.text = w.getCategory().displayName
-                binding.tvDefinition.text = w.definition
-                binding.tvExample.text = "\"${w.example}\""
-                binding.tvSynonyms.text = w.synonyms
-                binding.tvAntonyms.text = w.antonyms
-                binding.tvEtymology.text = w.etymology
+                // Update UI on Main dispatcher
+                word?.let { w ->
+                    binding.tvWord.text = w.word
+                    binding.tvPronunciation.text = w.pronunciation
+                    binding.chipPartOfSpeech.text = w.partOfSpeech
+                    binding.chipDifficulty.text = w.getDifficulty().displayName
+                    binding.chipCategory.text = w.getCategory().displayName
+                    binding.tvDefinition.text = w.definition
+                    binding.tvExample.text = "\"${w.example}\""
+                    binding.tvSynonyms.text = w.synonyms
+                    binding.tvAntonyms.text = w.antonyms
+                    binding.tvEtymology.text = w.etymology
 
-                binding.tvMasteryLevel.text = getString(R.string.mastery_level, progress.masteryLevel)
-                binding.tvAccuracy.text = getString(R.string.accuracy, progress.getAccuracy())
-                binding.tvReviewCount.text = getString(R.string.review_count, progress.reviewCount)
+                    binding.tvMasteryLevel.text = getString(R.string.mastery_level, progress.masteryLevel)
+                    binding.tvAccuracy.text = getString(R.string.accuracy, progress.getAccuracy())
+                    binding.tvReviewCount.text = getString(R.string.review_count, progress.reviewCount)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

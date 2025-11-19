@@ -9,8 +9,11 @@ import com.vocabulary.data.database.VocabularyDatabase
 import com.vocabulary.data.model.Word
 import com.vocabulary.data.repository.VocabularyRepository
 import com.vocabulary.databinding.ActivityQuizBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QuizActivity : AppCompatActivity() {
     private lateinit var binding: ActivityQuizBinding
@@ -43,28 +46,40 @@ class QuizActivity : AppCompatActivity() {
 
     private fun loadNextQuestion() {
         lifecycleScope.launch {
-            val allWords = repository.getAllWords().firstOrNull()
-            if (allWords.isNullOrEmpty()) {
-                Snackbar.make(binding.root, "No words available", Snackbar.LENGTH_SHORT).show()
-                return@launch
-            }
+            try {
+                // Load words on IO dispatcher
+                val allWords = withContext(Dispatchers.IO) {
+                    repository.getAllWords().firstOrNull()
+                }
 
-            currentWord = allWords.random()
-            currentWord?.let { word ->
+                if (allWords.isNullOrEmpty()) {
+                    Snackbar.make(binding.root, "No words available", Snackbar.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                // Process data on Default dispatcher
+                val (word, options, answerIndex) = withContext(Dispatchers.Default) {
+                    val selectedWord = allWords.random()
+                    val wrongWords = allWords.filter { it.id != selectedWord.id }.shuffled().take(3)
+                    val quizOptions = (wrongWords + selectedWord).shuffled()
+                    val correctIndex = quizOptions.indexOf(selectedWord)
+                    Triple(selectedWord, quizOptions, correctIndex)
+                }
+
+                // Update UI on Main dispatcher
+                currentWord = word
+                correctAnswerIndex = answerIndex
+
                 binding.tvQuizWord.text = word.word
-
-                // Create multiple choice options
-                val wrongWords = allWords.filter { it.id != word.id }.shuffled().take(3)
-                val options = (wrongWords + word).shuffled()
-                correctAnswerIndex = options.indexOf(word)
-
                 binding.radioOption1.text = options[0].definition
                 binding.radioOption2.text = options[1].definition
                 binding.radioOption3.text = options[2].definition
                 binding.radioOption4.text = options[3].definition
-
                 binding.radioGroupOptions.clearCheck()
                 binding.tvResult.visibility = View.GONE
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Snackbar.make(binding.root, "Error loading question", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
@@ -97,19 +112,23 @@ class QuizActivity : AppCompatActivity() {
         }
         binding.tvResult.visibility = View.VISIBLE
 
-        // Record answer
+        // Record answer and load next question using coroutines
         currentWord?.let { word ->
             lifecycleScope.launch {
-                repository.recordQuizAnswer(word.id, isCorrect)
+                // Record answer on IO dispatcher
+                withContext(Dispatchers.IO) {
+                    repository.recordQuizAnswer(word.id, isCorrect)
+                }
+
+                // Update title with score
+                supportActionBar?.title = "Quiz - Score: $correctCount/$questionCount"
+
+                // Delay using coroutines instead of postDelayed
+                delay(2000)
+
+                // Load next question
+                loadNextQuestion()
             }
         }
-
-        // Load next question after delay
-        binding.root.postDelayed({
-            loadNextQuestion()
-        }, 2000)
-
-        // Update title with score
-        supportActionBar?.title = "Quiz - Score: $correctCount/$questionCount"
     }
 }

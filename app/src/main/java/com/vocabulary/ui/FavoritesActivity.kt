@@ -4,13 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vocabulary.data.database.VocabularyDatabase
 import com.vocabulary.databinding.ActivityFavoritesBinding
 import com.vocabulary.ui.adapter.WordsAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FavoritesActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoritesBinding
@@ -44,15 +49,24 @@ class FavoritesActivity : AppCompatActivity() {
     }
 
     private fun loadFavoriteWords() {
+        // Collect favorite words Flow using lifecycleScope with repeatOnLifecycle
         lifecycleScope.launch {
-            val database = VocabularyDatabase.getDatabase(applicationContext)
-            val favoriteProgress = database.wordProgressDao().getFavoriteWords().firstOrNull() ?: emptyList()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val database = VocabularyDatabase.getDatabase(applicationContext)
 
-            val favoriteWords = favoriteProgress.mapNotNull { progress ->
-                database.wordDao().getWordById(progress.wordId)
+                // Collect favorite progress changes
+                database.wordProgressDao().getFavoriteWords().collectLatest { favoriteProgress ->
+                    // Fetch word details on IO dispatcher
+                    val favoriteWords = withContext(Dispatchers.IO) {
+                        favoriteProgress.mapNotNull { progress ->
+                            database.wordDao().getWordById(progress.wordId)
+                        }
+                    }
+
+                    // Update UI on Main dispatcher
+                    adapter.submitList(favoriteWords)
+                }
             }
-
-            adapter.submitList(favoriteWords)
         }
     }
 }
