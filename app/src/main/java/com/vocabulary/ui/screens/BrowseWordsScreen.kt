@@ -2,6 +2,7 @@ package com.vocabulary.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,6 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vocabulary.data.model.Word
+import com.vocabulary.data.model.WordCategory
 import com.vocabulary.ui.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,6 +26,15 @@ fun BrowseWordsScreen(
     onNavigateBack: () -> Unit
 ) {
     val allWords by viewModel.allWords.collectAsStateWithLifecycle(emptyList())
+    var selectedCategory by remember { mutableStateOf<WordCategory?>(null) }
+
+    val filteredWords = remember(allWords, selectedCategory) {
+        if (selectedCategory == null) {
+            allWords
+        } else {
+            allWords.filter { it.getCategoryEnum() == selectedCategory }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -40,19 +51,50 @@ fun BrowseWordsScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(allWords, key = { it.id }) { word ->
-                WordListItem(
-                    word = word,
-                    onClick = { onNavigateToWordDetail(word.id) }
-                )
+            // Category Filter
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                item {
+                    FilterChip(
+                        selected = selectedCategory == null,
+                        onClick = { selectedCategory = null },
+                        label = { Text("All") }
+                    )
+                }
+
+                items(WordCategory.entries) { category ->
+                    FilterChip(
+                        selected = selectedCategory == category,
+                        onClick = { selectedCategory = category },
+                        label = { Text(category.displayName) }
+                    )
+                }
+            }
+
+            Divider()
+
+            // Words List
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(filteredWords, key = { it.id }) { word ->
+                    WordListItem(
+                        word = word,
+                        onClick = { onNavigateToWordDetail(word.id) }
+                    )
+                }
             }
         }
     }
@@ -66,14 +108,16 @@ fun WordListItem(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Text(
                     text = word.word,
@@ -82,16 +126,36 @@ fun WordListItem(
                     modifier = Modifier.weight(1f)
                 )
 
-                SuggestionChip(
-                    onClick = { },
-                    label = { Text(word.difficultyLevel) }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    AssistChip(
+                        onClick = { },
+                        label = {
+                            Text(
+                                word.getCategoryEnum().displayName,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    )
+
+                    AssistChip(
+                        onClick = { },
+                        label = {
+                            Text(
+                                word.difficultyLevel,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    )
+                }
             }
 
             Text(
                 text = word.pronunciation,
                 style = MaterialTheme.typography.bodySmall,
                 fontStyle = FontStyle.Italic,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
             )
 

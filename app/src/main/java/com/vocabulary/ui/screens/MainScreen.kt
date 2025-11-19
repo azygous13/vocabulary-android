@@ -269,14 +269,29 @@ fun WordOfTheDayCard(
                 text = word.pronunciation,
                 style = MaterialTheme.typography.bodyMedium,
                 fontStyle = FontStyle.Italic,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            SuggestionChip(
-                onClick = { },
-                label = { Text(word.partOfSpeech) },
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            Row(
+                modifier = Modifier.padding(top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AssistChip(
+                    onClick = { },
+                    label = { Text(word.partOfSpeech) }
+                )
+
+                AssistChip(
+                    onClick = { },
+                    label = { Text(word.getCategoryEnum().displayName) }
+                )
+
+                AssistChip(
+                    onClick = { },
+                    label = { Text(word.getDifficultyEnum().displayName) }
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
