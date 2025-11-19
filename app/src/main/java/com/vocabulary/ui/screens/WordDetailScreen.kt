@@ -52,20 +52,15 @@ fun WordDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("📖 Word Details") },
+                title = { Text("Word Details") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            contentDescription = "Back"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { paddingValues ->
@@ -75,19 +70,19 @@ fun WordDetailScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
-                    .padding(20.dp)
+                    .padding(16.dp)
             ) {
                 // Word Header Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    shape = MaterialTheme.shapes.extraLarge,
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                    shape = MaterialTheme.shapes.medium,
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -146,11 +141,11 @@ fun WordDetailScreen(
                 // Definition and Example Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    shape = MaterialTheme.shapes.large
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
                             text = "Definition",
@@ -186,11 +181,11 @@ fun WordDetailScreen(
                 // Synonyms and Antonyms Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    shape = MaterialTheme.shapes.large
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
                             text = "Synonyms",
@@ -225,11 +220,11 @@ fun WordDetailScreen(
                 // Etymology Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    shape = MaterialTheme.shapes.large
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
                             text = "Etymology",
@@ -251,14 +246,14 @@ fun WordDetailScreen(
                 progress?.let { p ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                        shape = MaterialTheme.shapes.large,
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                        shape = MaterialTheme.shapes.medium,
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
+                            containerColor = MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Column(
-                            modifier = Modifier.padding(20.dp)
+                            modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
                                 text = "Your Progress",
