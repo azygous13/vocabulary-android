@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +16,9 @@ import kotlinx.coroutines.launch
 
 class BrowseWordsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBrowseWordsBinding
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels {
+        ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+    }
     private lateinit var adapter: WordsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

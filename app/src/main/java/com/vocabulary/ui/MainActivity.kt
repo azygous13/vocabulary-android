@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnMarkLearned.setOnClickListener {
-            viewModel.markAsLearned()
+            viewModel.toggleLearned()
         }
 
         binding.btnViewDetails.setOnClickListener {
@@ -122,11 +122,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateLearnedButton(isLearned: Boolean) {
         if (isLearned) {
-            binding.btnMarkLearned.text = "Learned ✓"
-            binding.btnMarkLearned.isEnabled = false
+            binding.btnMarkLearned.text = "Learned ✓ (Tap to unmark)"
         } else {
             binding.btnMarkLearned.text = getString(R.string.mark_as_learned)
-            binding.btnMarkLearned.isEnabled = true
         }
     }
 

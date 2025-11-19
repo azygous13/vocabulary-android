@@ -93,6 +93,24 @@ class VocabularyRepository(
         wordProgressDao.insertProgress(updatedProgress)
     }
 
+    suspend fun toggleLearned(wordId: Long) {
+        val progress = getWordProgress(wordId)
+        val updatedProgress = if (!progress.isLearned) {
+            // Mark as learned
+            progress.copy(
+                isLearned = true,
+                firstLearnedDate = progress.firstLearnedDate ?: System.currentTimeMillis()
+            )
+        } else {
+            // Unmark as learned
+            progress.copy(
+                isLearned = false,
+                firstLearnedDate = null
+            )
+        }
+        wordProgressDao.insertProgress(updatedProgress)
+    }
+
     suspend fun toggleFavorite(wordId: Long) {
         val progress = getWordProgress(wordId)
         val updatedProgress = progress.copy(isFavorite = !progress.isFavorite)

@@ -116,6 +116,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun toggleLearned() {
+        viewModelScope.launch {
+            _todayWord.value?.let { word ->
+                withContext(Dispatchers.IO) {
+                    repository.toggleLearned(word.id)
+                }
+                loadWordProgress(word.id)
+                loadStatistics()
+            }
+        }
+    }
+
     fun markAsLearned() {
         viewModelScope.launch {
             _todayWord.value?.let { word ->
