@@ -282,13 +282,7 @@ fun CategorySelectionGrid(
                     onCategoriesChange(newCategories)
                 },
                 label = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(category.emoji)
-                        Text(category.displayName)
-                    }
+                    Text(category.displayName)
                 },
                 modifier = Modifier.fillMaxWidth()
             )
