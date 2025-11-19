@@ -5,8 +5,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
@@ -16,6 +18,8 @@ import com.vocabulary.data.database.VocabularyDatabase
 import com.vocabulary.data.model.Word
 import com.vocabulary.data.model.WordProgress
 import com.vocabulary.ui.MainViewModel
+import com.vocabulary.ui.components.rememberTextToSpeech
+import com.vocabulary.ui.components.speakWord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,6 +33,7 @@ fun WordDetailScreen(
     var word by remember { mutableStateOf<Word?>(null) }
     var progress by remember { mutableStateOf<WordProgress?>(null) }
     val context = LocalContext.current
+    val tts = rememberTextToSpeech()
 
     LaunchedEffect(wordId) {
         withContext(Dispatchers.IO) {
@@ -75,12 +80,28 @@ fun WordDetailScreen(
                     Column(
                         modifier = Modifier.padding(20.dp)
                     ) {
-                        Text(
-                            text = w.word,
-                            style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = w.word,
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
+                            IconButton(
+                                onClick = { tts?.speakWord(w.word) },
+                                enabled = tts != null
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.VolumeUp,
+                                    contentDescription = "Play pronunciation",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
 
                         Text(
                             text = w.pronunciation,

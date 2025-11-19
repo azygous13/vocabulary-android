@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vocabulary.ui.MainViewModel
+import com.vocabulary.ui.components.rememberTextToSpeech
+import com.vocabulary.ui.components.speakWord
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -201,6 +204,8 @@ fun WordOfTheDayCard(
     onToggleLearned: () -> Unit,
     onViewDetails: () -> Unit
 ) {
+    val tts = rememberTextToSpeech()
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -230,12 +235,28 @@ fun WordOfTheDayCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = word.word,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = word.word,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                IconButton(
+                    onClick = { tts?.speakWord(word.word) },
+                    enabled = tts != null
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.VolumeUp,
+                        contentDescription = "Play pronunciation",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
 
             Text(
                 text = word.pronunciation,
