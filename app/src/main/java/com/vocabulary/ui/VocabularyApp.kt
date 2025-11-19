@@ -35,6 +35,9 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
                 },
                 onNavigateToSpacedRepetition = {
                     navController.navigate(Screen.SpacedRepetition.route)
+                },
+                onNavigateToSettings = {
+                    navController.navigate(Screen.Settings.route)
                 }
             )
         }
@@ -96,6 +99,12 @@ fun VocabularyApp(viewModel: MainViewModel = viewModel()) {
         composable(Screen.SpacedRepetition.route) {
             SpacedRepetitionScreen(
                 viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

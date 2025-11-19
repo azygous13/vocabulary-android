@@ -15,6 +15,7 @@ fragmentKtx = "1.6.2"
 constraintlayout = "2.1.4"
 ksp = "2.0.21-1.0.27"
 workManager = "2.9.0"
+datastore = "1.1.1"
 coroutinesTest = "1.8.0"
 mockk = "1.13.8"
 turbine = "1.0.0"
@@ -57,6 +58,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 # WorkManager for notifications
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
+
+# DataStore
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }

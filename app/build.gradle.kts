@@ -66,6 +66,9 @@ dependencies {
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
 
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
+
     // Compose
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)

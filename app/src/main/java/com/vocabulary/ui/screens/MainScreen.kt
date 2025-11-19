@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
@@ -32,7 +33,8 @@ fun MainScreen(
     onNavigateToBrowse: () -> Unit,
     onNavigateToFavorites: () -> Unit,
     onNavigateToQuiz: () -> Unit,
-    onNavigateToSpacedRepetition: () -> Unit
+    onNavigateToSpacedRepetition: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val todayWord by viewModel.todayWord.collectAsStateWithLifecycle()
     val wordProgress by viewModel.wordProgress.collectAsStateWithLifecycle()
@@ -48,6 +50,12 @@ fun MainScreen(
                         Icon(
                             imageVector = Icons.Default.Favorite,
                             contentDescription = "Favorites"
+                        )
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
                         )
                     }
                 }

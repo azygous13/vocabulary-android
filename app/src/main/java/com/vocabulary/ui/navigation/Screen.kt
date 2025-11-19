@@ -12,4 +12,5 @@ sealed class Screen(val route: String) {
         fun createRoute(quizType: String) = "quiz/$quizType"
     }
     data object SpacedRepetition : Screen("spaced_repetition")
+    data object Settings : Screen("settings")
 }
