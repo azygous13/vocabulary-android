@@ -2,15 +2,19 @@ package com.vocabulary.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,20 +32,18 @@ fun BrowseWordsScreen(
     val allWords by viewModel.allWords.collectAsStateWithLifecycle(emptyList())
     var selectedCategory by remember { mutableStateOf<WordCategory?>(null) }
 
-    val filteredWords = remember(allWords, selectedCategory) {
-        if (selectedCategory == null) {
-            allWords
-        } else {
-            allWords.filter { it.getCategoryEnum() == selectedCategory }
-        }
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Browse Words") },
+                title = { Text(selectedCategory?.displayName ?: "Browse Words") },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = {
+                        if (selectedCategory != null) {
+                            selectedCategory = null
+                        } else {
+                            onNavigateBack()
+                        }
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -51,40 +53,27 @@ fun BrowseWordsScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Category Filter
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-            ) {
-                item {
-                    FilterChip(
-                        selected = selectedCategory == null,
-                        onClick = { selectedCategory = null },
-                        label = { Text("All") }
-                    )
-                }
-
-                items(WordCategory.entries) { category ->
-                    FilterChip(
-                        selected = selectedCategory == category,
-                        onClick = { selectedCategory = category },
-                        label = { Text(category.displayName) }
-                    )
-                }
+        if (selectedCategory == null) {
+            // Show category collection
+            CategoryCollection(
+                allWords = allWords,
+                onCategoryClick = { category ->
+                    selectedCategory = category
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            )
+        } else {
+            // Show filtered words
+            val filteredWords = remember(allWords, selectedCategory) {
+                allWords.filter { it.getCategoryEnum() == selectedCategory }
             }
 
-            Divider()
-
-            // Words List
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
                     .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp)
@@ -95,6 +84,77 @@ fun BrowseWordsScreen(
                         onClick = { onNavigateToWordDetail(word.id) }
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CategoryCollection(
+    allWords: List<Word>,
+    onCategoryClick: (WordCategory) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(WordCategory.entries) { category ->
+            val wordCount = allWords.count { it.getCategoryEnum() == category }
+            CategoryCard(
+                category = category,
+                wordCount = wordCount,
+                onClick = { onCategoryClick(category) }
+            )
+        }
+    }
+}
+
+@Composable
+fun CategoryCard(
+    category: WordCategory,
+    wordCount: Int,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = category.displayName,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "$wordCount words",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
